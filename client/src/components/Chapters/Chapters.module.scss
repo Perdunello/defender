@@ -1,0 +1,136 @@
+.main {
+  width: 90%;
+  margin: auto;
+
+  .settings_wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    height: 120px;
+    .search_wrapper {
+      position: relative;
+      display: inline-block;
+
+      .search_input {
+        font-size: 15px;
+        text-align: start;
+        padding-left: 8px;
+        border: 1px solid black;
+        border-radius: 2px;
+        height: 40px;
+        width: 200px;
+
+        &::-webkit-search-cancel-button {
+          display: none;
+        }
+      }
+
+      .search_icon {
+        position: absolute;
+        right: 10px;
+        width: 24px;
+        height: 24px;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    .select_wrapper {
+      .select {
+        width: 180px;
+        cursor: pointer;
+        min-height: 40px;
+        display: inline-flex;
+        flex-direction: column;
+
+        //align-items: center;
+        box-sizing: border-box;
+        padding: 7px 13px;
+        border: 1px solid black;
+        border-radius: 2px;
+
+        .arrow_icon {
+          margin-right: 5px;
+        }
+
+        .open_arrow_icon {
+          transform: rotateX(180deg);
+        }
+
+        .filters_wrapper {
+          .filter {
+            display: flex;
+            justify-content: flex-start;
+            padding: 3px 6px;
+            margin-top: 8px;
+
+            &:hover {
+              background: #F2F2F2;
+              border-radius: 2px;
+            }
+          }
+
+          .checked_filter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            //text-align: start;
+            background: black;
+            border-radius: 2px;
+            color: white;
+            padding: 3px 6px;
+            margin-top: 8px;
+          }
+        }
+      }
+    }
+  }
+
+  .files_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    row-gap: 55px;
+    .file {
+      width: 185px;
+      //margin: 30px;
+      border: 1px solid #DCDCDC;
+      padding: 37px;
+      border-radius: 4px;
+      position: relative;
+
+      .author {
+        color: #737373;
+        font-size: 17px;
+        margin-top: 11px;
+      }
+
+      .name {
+        text-align: center;
+        margin: 11px auto 20px auto;
+        font-size: 18px;
+      }
+
+      .button_wrapper {
+        display: flex;
+        flex-direction: column;
+
+        button {
+          width: 185px;
+          font-size: 18px;
+          border-radius: 5px;
+          border: 1px solid #625C4C;
+          padding: 13px 50px;
+          margin-top: 11px;
+        }
+      }
+      .save_icon{
+        position: absolute;
+        right: 8px;
+        top: 15px;
+        width: 20px;
+        width: 20px;
+      }
+    }
+  }
+}
