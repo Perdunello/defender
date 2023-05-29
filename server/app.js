@@ -1,14 +1,19 @@
 const express = require('express')
-const PORT = process.env.PORT || 3001
+require('dotenv').config();
+const PORT = process.env.PORT || 3002
 const app = express()
 const cors = require('cors')
-require('dotenv').config();
 const bodyParser = require('body-parser');
+const loginisationRouter = require("./routes/auth.route");
+const cookieParser = require("cookie-parser");
 
-
+app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(cors())
+app.use(cors({origin: 'http://localhost:3000', credentials: true,}))
 app.use(express.json())
+app.use('/auth', loginisationRouter)
+
+
 app.listen(PORT, () => {
     console.log(`Server is starting on port ${PORT}`)
 });

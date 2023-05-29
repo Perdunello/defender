@@ -3,10 +3,13 @@ import Header from "./components/Header/Header";
 import {Route, Routes} from "react-router-dom";
 import MainPage from "./components/MainPage/MainPage";
 import Chapters from "./components/Chapters/Chapters";
-import Authorisation from "./components/Login/Authorisation";
+import Authorisation from "./components/Authorisation/Authorisation";
 import {useDispatch, useSelector} from "react-redux";
-import {toggleForm} from "./redux/AuthReducer";
+import {autoLoginRequest, toggleForm} from "./redux/AuthReducer";
 import Modal from 'react-modal';
+import {useEffect} from "react";
+import Account from "./components/Account/Account";
+import FileReader from "./components/FileReader/FileReader";
 
 const customModalStyles = {
     overlay: {
@@ -27,21 +30,28 @@ const customModalStyles = {
 
 function App() {
     const isOpenForm = useSelector(state => state.auth.isOpenForm)
-    const form = useSelector(state => state.auth.form)
+    // const form = useSelector(state => state.auth.form)
     const dispatch = useDispatch()
+    const isAuth = useSelector(state => state.auth.isAuth)
+    useEffect(() => {
+        dispatch(autoLoginRequest())
+    }, [])
     return (
         <div className="App">
             <Header/>
             <Routes>
-                <Route path={'/'} element={<MainPage/>}></Route>
-                <Route path={'/chapters/*'} element={<Chapters/>}></Route>
+                <Route path={'/'} element={<MainPage/>}/>
+                <Route path={'/chapters/*'} element={<Chapters/>}/>
+                <Route path={'/account'} element={<Account/>}/>
+                <Route path={'/file'} element={<FileReader/>}/>
             </Routes>
-            <Modal
+            {!isAuth && <Modal
                 isOpen={isOpenForm}
                 onRequestClose={() => dispatch(toggleForm())}
                 style={customModalStyles}
                 contentLabel="Authorisation Modal"
-            ><Authorisation/></Modal>
+                appElement={document.getElementById('root')}
+            ><Authorisation/></Modal>}
         </div>
     );
 }

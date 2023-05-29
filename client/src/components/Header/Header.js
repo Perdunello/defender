@@ -1,10 +1,12 @@
 import styles from './Header.module.scss'
 import {NavLink} from "react-router-dom";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {toggleForm} from "../../redux/AuthReducer";
 
 const Header = () => {
     const dispatch = useDispatch()
+    const isAuth = useSelector(state => state.auth.isAuth)
+
     return <div className={styles.main_wrapper}>
         <div className={styles.logo_wrapper}>
             <NavLink to={'/'}>
@@ -44,9 +46,12 @@ const Header = () => {
                                                       width={30} height={30} alt="saves icon"/></li>
                 <li className={styles.icon_item}><img src="/common/downloads_icon.svg" className={styles.icon_image}
                                                       width={30} height={30} alt="downloads icon"/></li>
-                <li className={styles.icon_item} onClick={() => dispatch(toggleForm())}><img
+                <li className={styles.icon_item} onClick={() => dispatch(toggleForm())}>{isAuth ? <NavLink
+                    to={'/account'}><img
                     src="/common/account_icon.svg" className={styles.icon_image}
-                    width={30} height={30} alt="account icon"/></li>
+                    width={30} height={30} alt="account icon"/></NavLink> : <img
+                    src="/common/account_icon.svg" className={styles.icon_image}
+                    width={30} height={30} alt="account icon"/>}</li>
             </ul>
         </nav>
     </div>
