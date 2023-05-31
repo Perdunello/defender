@@ -1,8 +1,7 @@
 const db = require('../DB')
 const tokens = require("../tokens/tokens");
 const {hash} = require("../hash/hash");
-const {log} = require("nodemon/lib/utils");
-const {response} = require("express");
+
 
 class LoginisationController {
     async signup(req, res) {

@@ -1,27 +1,45 @@
 import styles from './Chapters.module.scss'
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
+import {getFilesRequest} from "../../redux/FilesReducer";
+import {useDispatch, useSelector} from "react-redux";
+import axios from "axios";
+import API from "../../api/api";
+import {useLocation} from "react-router-dom";
 
 const Chapters = () => {
+    const dispatch = useDispatch()
     const [showedSelect, setShowedSelect] = useState(true)
     const [sortBy, setSortBy] = useState('за популярністю')
-    const files = [
-        {id: 1, author: 'Johanes', name: 'Тактика легкої піхоти для малих підрозділів', img: "/file_img.png"},
-        {id: 2, author: 'Johanes', name: 'Тактика легкої піхоти для малих підрозділів', img: "/file_img.png"},
-        {id: 3, author: 'Johanes', name: 'Тактика легкої піхоти для малих підрозділів', img: "/file_img.png"},
-        {id: 4, author: 'Johanes', name: 'Тактика легкої піхоти для малих підрозділів', img: "/file_img.png"},
-        {id: 5, author: 'Johanes', name: 'Тактика легкої піхоти для малих підрозділів', img: "/file_img.png"},
-        {id: 6, author: 'Johanes', name: 'Тактика легкої піхоти для малих підрозділів', img: "/file_img.png"},
-        {id: 7, author: 'Johanes', name: 'Тактика легкої піхоти для малих підрозділів', img: "/file_img.png"},
-        {id: 8, author: 'Johanes', name: 'Тактика легкої піхоти для малих підрозділів', img: "/file_img.png"},
-        {id: 9, author: 'Johanes', name: 'Тактика легкої піхоти для малих підрозділів', img: "/file_img.png"},
-        {id: 10, author: 'Johanes', name: 'Тактика легкої піхоти для малих підрозділів', img: "/file_img.png"},
-    ]
+    const files = useSelector(state => state.files.filesData)
+    const chapter = useLocation();
     useEffect(() => {
-        console.log(window.location.pathname.match(/\/chapters\/(.+)/)[1])
-    }, [])
+        dispatch(getFilesRequest(chapter.pathname.match(/\/chapters\/(.+)/)[1]))
+    }, [chapter.pathname])
+
     const closeSelect = () => {
         setShowedSelect(!showedSelect)
     }
+    const openFile = (name) => {
+        API.openFile(name).then(response => {
+            if (response.status === 200) {
+                const file = new Blob([response.data], {type: 'application/pdf'});
+                const fileURL = URL.createObjectURL(file);
+                window.open(fileURL);
+            }
+        })
+    }
+    const downloadFile = (name) => {
+        const fileUrl = `http://localhost:3001/files/download/${chapter.pathname.match(/\/chapters\/(.+)/)[1]}/${name}`; // Путь к файлу на сервере
+        const link = document.createElement('a');
+        link.href = fileUrl;
+        link.download = `${name}.pdf`; // Имя файла для сохранения на клиенте
+        link.click();
+    };
+    const saveFile = (name) => {
+        console.log(name)
+        // API.saveFile(name).then(response => response)
+    }
+
     return <div className={styles.main}>
         <div className={styles.settings_wrapper}>
             <div className={styles.search_wrapper}>
@@ -53,16 +71,23 @@ const Chapters = () => {
             </div>
         </div>
         <div className={styles.files_wrapper}>
-            {files.map(file => {
-                return <div key={file.id} className={styles.file}>
-                    <img src={file.img} alt=""/>
-                    <div className={styles.author}>{file.author}</div>
-                    <div className={styles.name}>{file.name}</div>
+            {files && files.map(file => {
+                const base64Image = btoa(String.fromCharCode.apply(null, file.cover.data));
+                return <div key={file.file_id} className={styles.file}>
+                    <img src={`data:image/jpeg;base64, ${base64Image}`} height={150} width={150}
+                         className={styles.file_cover}
+                         alt={file.name + ' cover'}/>
+                    <div className={styles.author}>{file.author.replace(/_/g, ' ')}</div>
+                    <div className={styles.name}>{file.name.replace(/_/g, ' ')}</div>
                     <div className={styles.button_wrapper}>
-                        <button style={{background: '#625C4C', color: 'white'}}>Скачати</button>
-                        <button>Перегляд</button>
+                        <button style={{background: '#625C4C', color: 'white'}}
+                                onClick={() => downloadFile(file.name)}>Скачати
+                        </button>
+                        <button onClick={() => openFile(file.name)}>Перегляд</button>
                     </div>
-                    <img src="/common/saves_icon.svg" className={styles.save_icon} alt="saves icon"/>
+                    <img src="/common/saves_icon.svg" className={styles.save_icon} width={30} height={30}
+                         onClick={() => saveFile(file.name)} alt="saves icon"/>
+                    {/*<img src="/common/saves_icon_filled.svg" className={styles.save_icon} width={30} height={30} alt="saves icon"/>*/}
                 </div>
             })}
         </div>

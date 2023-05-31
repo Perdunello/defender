@@ -37,6 +37,15 @@ const API = {
     logout() {
         return axios.get('auth/logout').then(response => response)
     },
+    getFiles(chapter) {
+        return axios.get(`files/${chapter}`).then(response => response)
+    },
+    openFile(name) {
+        return axios.get(`files/small_arms/${name}`, {responseType: 'blob'}).then(response => response)
+    },
+    // saveFile(name) {
+    //     return axios.get(`files/save/awdawd`).then(response => response)
+    // },
 }
 
 export default API

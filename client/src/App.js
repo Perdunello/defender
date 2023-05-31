@@ -7,7 +7,7 @@ import Authorisation from "./components/Authorisation/Authorisation";
 import {useDispatch, useSelector} from "react-redux";
 import {autoLoginRequest, toggleForm} from "./redux/AuthReducer";
 import Modal from 'react-modal';
-import {useEffect} from "react";
+import {useEffect, useRef, useState} from "react";
 import Account from "./components/Account/Account";
 import FileReader from "./components/FileReader/FileReader";
 
@@ -30,12 +30,30 @@ const customModalStyles = {
 
 function App() {
     const isOpenForm = useSelector(state => state.auth.isOpenForm)
-    // const form = useSelector(state => state.auth.form)
     const dispatch = useDispatch()
     const isAuth = useSelector(state => state.auth.isAuth)
+    const [isLoading, setLoading] = useState(true); // Добавляем состояние загрузки
+
+    const isEffectExecuted = useRef(false);
+
+
     useEffect(() => {
-        dispatch(autoLoginRequest())
-    }, [])
+        if (!isEffectExecuted.current) {
+            dispatch(autoLoginRequest()).then(() => setLoading(false));
+            isEffectExecuted.current = true; // Устанавливаем флаг выполнения useEffect
+        }
+    }, [dispatch]);
+
+    // useEffect(() => {
+    //     dispatch(autoLoginRequest()).then(() => {
+    //         console.log('render')
+    //         setLoading(false)
+    //     })
+    // }, [])
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+    // console.log('render')
     return (
         <div className="App">
             <Header/>

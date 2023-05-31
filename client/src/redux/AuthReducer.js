@@ -83,7 +83,7 @@ export const loginRequest = (data) => {
 }
 export const autoLoginRequest = () => {
     return dispatch => {
-        API.autoLogin().then(response => {
+        return API.autoLogin().then(response => {
             if (response?.status === 200) {
                 dispatch(setAuth())
                 dispatch(setAuthData(response.data))
